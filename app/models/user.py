@@ -38,7 +38,7 @@ class User(db.Model):
         }
 
     @staticmethod
-    @cache.memoize(CACHE_TIMEOUT)
+    @cache.memoize(app.config["CACHE_TIMEOUT"])
     def data_by_token(token):
         s = Serializer(app.config["SECRET_KEY"])
         try:

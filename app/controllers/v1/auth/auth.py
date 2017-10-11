@@ -17,7 +17,7 @@ def new_user():
     if email is None or password is None:
         abort(400)
     if User.query.filter_by(email=email).first() is not None:
-        abort(400)
+        abort(400, 'Email already in use.')
     user = User(email = email)
     user.hash_password(password)
     db.session.add(user)
@@ -46,9 +46,9 @@ def token():
 def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
     if not user:
-        abort(401, 'The email you have entered is invalid')
+        abort(401, 'The email you have entered is invalid.')
     if not user.verify_password(password):
-        abort(401, 'The password you have entered is invalid')
+        abort(401, 'The password you have entered is invalid.')
     g.user = user
     return True
 

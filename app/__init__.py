@@ -3,7 +3,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPTokenAuth, HTTPBasicAuth
-from flask import Flask, request
+from utils import prepare_json_response
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -38,3 +39,38 @@ def add_cors_headers(response):
             response.headers['Access-Control-Allow-Headers'] = headers
     return response
 app.after_request(add_cors_headers)
+
+
+
+@app.errorhandler(400)
+def forbidden400(error):
+    """
+    Renders 400 response
+    :returns: JSON
+    :rtype: flask.Response
+    """
+    return jsonify(
+        prepare_json_response(
+            message="Error 400: Bad request",
+            success=False,
+            data=error.description
+        )
+    ), 400
+
+@app.errorhandler(401)
+def forbidden401(error):
+    """
+    Renders 401 response
+    :returns: JSON
+    :rtype: flask.Response
+    """
+    return jsonify(
+        prepare_json_response(
+            message="Error 401: Unauthorized",
+            success=False,
+            data=error.description
+        )
+    ), 401
+
+
+
