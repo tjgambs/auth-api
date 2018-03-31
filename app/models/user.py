@@ -16,6 +16,8 @@ class User(db.Model):
     email = db.Column(db.String(), index=True)
     password_hash = db.Column(db.String())
     token = db.Column(db.String(), index=True)
+    first_name = db.Column(db.String())
+    last_name = db.Column(db.String())
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -34,7 +36,9 @@ class User(db.Model):
         return {
             'id': self.id,
             'email': self.email,
-            'token': self.token
+            'token': self.token,
+            'first_name': self.first_name,
+            'last_name': self.last_name
         }
 
     @staticmethod
