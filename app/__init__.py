@@ -18,11 +18,9 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 from app.controllers import default
 from app.controllers.v1.auth import auth
-from app.controllers.v1.test import test
 
 app.register_blueprint(default.MOD)
 app.register_blueprint(auth.MOD)
-app.register_blueprint(test.MOD)
 
 
 def add_cors_headers(response):

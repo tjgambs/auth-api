@@ -54,8 +54,8 @@ class User(db.Model):
         user_data = User.data_by_token(token)
         if user_data is None:
             return None
-        user = db.session.query(User).filter(User.id == user_data['id']).first()
+        user = db.session.query(User).filter(
+            User.id == user_data['id']).first()
         if not user or user.token != token:
             return None
         return user
-

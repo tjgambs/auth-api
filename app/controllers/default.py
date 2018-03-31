@@ -7,6 +7,7 @@ from app import app
 
 MOD = Blueprint("default", __name__)
 
+
 @MOD.route("/", methods=["GET"])
 def index():
     return jsonify(
@@ -17,6 +18,7 @@ def index():
         )
     )
 
+
 @MOD.route("/help", methods=["GET"])
 def help():
     func_list = []
@@ -25,7 +27,7 @@ def help():
             methods = rule.methods
             methods.discard("OPTIONS")
             methods.discard("HEAD")
-            func_list.append('%s -  %s' % (rule.rule,' '.join(methods)))
+            func_list.append('%s -  %s' % (rule.rule, ' '.join(methods)))
 
     return jsonify(
         prepare_json_response(

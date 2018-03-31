@@ -10,25 +10,29 @@ from app import app, db, auth, basicauth
 MOD = Blueprint("v1_auth", __name__, url_prefix="/v1/auth")
 
 
-@MOD.route('/user', methods = ['POST'])
+@MOD.route('/user', methods=['POST'])
 def new_user():
+    if request.method == 'OPTIONS':
+        return None
     email = request.json.get('email')
     password = request.json.get('password')
     if email is None or password is None:
         abort(400)
     if User.query.filter_by(email=email).first() is not None:
         abort(400, 'Email already in use.')
-    user = User(email = email)
+    user = User(email=email)
     user.hash_password(password)
     db.session.add(user)
     db.session.commit()
+    user.generate_auth_token(app.config['TOKEN_MAX_AGE'])
     return jsonify(
         prepare_json_response(
             message="OK",
             success=True,
             data=user.serialize
         )
-    ) 
+    )
+
 
 @MOD.route("/user/token", methods=["GET"])
 @basicauth.login_required
@@ -42,6 +46,18 @@ def token():
         )
     )
 
+
+@MOD.route("/user/verify", methods=["GET"])
+@auth.login_required
+def verify():
+    return jsonify(
+        prepare_json_response(
+            message=None,
+            success=True
+        )
+    )
+
+
 @basicauth.verify_password
 def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
@@ -52,6 +68,7 @@ def verify_password(email, password):
     g.user = user
     return True
 
+
 @auth.verify_token
 def verify_token(token):
     g.user = User.verify_auth_token(token)
@@ -60,10 +77,3 @@ def verify_token(token):
     elif g.user.token != token:
         abort(423, 'Your account has been automatically logged out due to activity on another device.')
     return True
-
-
-
-
-
-
-
