@@ -18,6 +18,7 @@ class User(db.Model):
     token = db.Column(db.String(), index=True)
     first_name = db.Column(db.String())
     last_name = db.Column(db.String())
+    account_type = db.Column(db.Integer())
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -38,7 +39,8 @@ class User(db.Model):
             'email': self.email,
             'token': self.token,
             'first_name': self.first_name,
-            'last_name': self.last_name
+            'last_name': self.last_name,
+            'account_type': self.account_type
         }
 
     @staticmethod

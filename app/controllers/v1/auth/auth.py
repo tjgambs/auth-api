@@ -18,12 +18,14 @@ def new_user():
     password = request.json.get('password')
     first_name = request.json.get('firstName')
     last_name = request.json.get('lastName')
+    account_type = request.json.get('accountType')
     if (email is None or password is None
-            or first_name is None or last_name is None):
+            or first_name is None or last_name is None
+            or account_type is None):
         abort(400)
     if User.query.filter_by(email=email).first() is not None:
         abort(400, 'Email already in use.')
-    user = User(email=email, first_name=first_name, last_name=last_name)
+    user = User(email=email, first_name=first_name, last_name=last_name, account_type=account_type)
     user.hash_password(password)
     db.session.add(user)
     db.session.commit()
