@@ -12,8 +12,8 @@ class User(db.Model):
 
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(), index=True)
+    id = db.Column(db.Integer)
+    email = db.Column(db.String(), index=True, primary_key=True)
     password_hash = db.Column(db.String())
     token = db.Column(db.String(), index=True)
     first_name = db.Column(db.String())
@@ -33,6 +33,15 @@ class User(db.Model):
         return self.token
 
     @property
+    def account_type_string(self):
+        if self.account_type == 0:
+            return 'Student'
+        if self.account_type == 1:
+            return 'Faculty'
+        if self.account_type == 2:
+            return 'Admin'
+
+    @property
     def serialize(self):
         return {
             'id': self.id,
@@ -40,7 +49,7 @@ class User(db.Model):
             'token': self.token,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'account_type': self.account_type
+            'account_type': self.account_type_string
         }
 
     @staticmethod

@@ -38,6 +38,31 @@ def new_user():
         )
     )
 
+@MOD.route('/update_user', methods=['POST'])
+@auth.login_required
+def update_user():
+    if request.method == 'OPTIONS':
+        return None
+    
+    email = request.json.get('email')
+    first_name = request.json.get('firstName')
+    last_name = request.json.get('lastName')
+    if email is None or first_name is None or last_name is None:
+        abort(400)
+
+    g.user.email = email
+    g.user.first_name = first_name
+    g.user.last_name = last_name
+    db.session.commit()
+
+    return jsonify(
+        prepare_json_response(
+            message="OK",
+            success=True,
+            data=g.user.serialize
+        )
+    )
+
 
 @MOD.route("/user/token", methods=["GET"])
 @basicauth.login_required
